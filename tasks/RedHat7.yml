@@ -1,0 +1,100 @@
+---
+## 対象マシンへZabbix40-Serverをインストール
+
+## Apacheインストール
+
+  - name: install Apache HTTP Server
+    yum: name=httpd state=present
+
+## DBインストール
+
+  - name: install MariaDB
+    yum: name={{ item }} state=present
+    with_items:
+      - mariadb
+      - mariadb-server
+      - mariadb-libs
+
+## PHPインストール
+
+  - name: install PHP
+    yum: name={{ item }} state=present
+    with_items:
+      - php
+      - php-gd
+      - php-mysql
+      - php-xml
+
+## PHP依存パッケージのインストール
+
+  - block:
+    - name: copy rpm files for php-bcmath, php-mbstring
+      copy: src={{ VAR_Zabbix40SV_localpkg_src }}/{{ item }} dest={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} mode=0666
+      with_items:
+        - "{{ VAR_Zabbix40SV_phpbcmath_src }}"
+        - "{{ VAR_Zabbix40SV_phpmbstring_src }}"
+
+    - name: install php-mbstring, php-bcmath
+      yum: name={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} state=present
+      with_items:
+        - "{{ VAR_Zabbix40SV_phpbcmath_src }}"
+        - "{{ VAR_Zabbix40SV_phpmbstring_src }}"
+
+    - name: delete rpm files for php-mbstring, php-bcmath
+      file: path={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} state=absent
+      with_items:
+        - "{{ VAR_Zabbix40SV_phpbcmath_src }}"
+        - "{{ VAR_Zabbix40SV_phpmbstring_src }}"
+    when:
+      - VAR_Zabbix40SV_phpbcmath_src is defined and (VAR_Zabbix40SV_phpbcmath_src)
+      - VAR_Zabbix40SV_phpmbstring_src is defined and (VAR_Zabbix40SV_phpmbstring_src)
+
+## trousersパッケージインストール
+
+  - block:
+    - name: copy .rpm file for trousers
+      copy: src={{ VAR_Zabbix40SV_localpkg_src }}/{{ item }} dest={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} mode=0666
+      with_items:
+        - "{{ VAR_Zabbix40SV_trousers_src }}"
+
+    - name: install trousers
+      yum: name={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} state=present
+      with_items:
+        - "{{ VAR_Zabbix40SV_trousers_src }}"
+
+    - name: delete .rpm file for trousers
+      file: path={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} state=absent
+      with_items:
+        - "{{ VAR_Zabbix40SV_trousers_src }}"
+    when:
+      - VAR_Zabbix40SV_trousers_src is defined and (VAR_Zabbix40SV_trousers_src)
+
+## Zabbixリポジトリパッケージインストール
+
+  - block:
+    - name: copy .rpm file(s) for Zabbix Release
+      copy: src=./{{ item }} dest={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} mode=0666
+      with_items:
+        - "{{ zabbix40sv_zabbixrelease_src }}"
+
+    - name: install Zabbix Release
+      yum: name={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} state=present
+      with_items:
+        - "{{ zabbix40sv_zabbixrelease_src }}"
+
+    - name: delete .rpm file(s) for Zabbix Release
+      file: path={{ VAR_Zabbix40SV_localpkg_dst }}/{{ item }} state=absent
+      with_items:
+        - "{{ zabbix40sv_zabbixrelease_src }}"
+    when:
+      - zabbix40sv_zabbixrelease_src is defined and (zabbix40sv_zabbixrelease_src)
+
+## Zabbixパッケージインストール
+
+  - name: install Zabbix Server
+    yum: name={{ item }} state=present
+    with_items:
+      - zabbix-server-mysql
+      - zabbix-web-mysql
+      - zabbix-web-japanese
+

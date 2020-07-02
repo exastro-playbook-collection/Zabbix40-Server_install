@@ -1,0 +1,23 @@
+###  vars file for ansible-zabbix-server
+
+## setting zabbix server work direcroty
+
+  VAR_Zabbix40SV_localpkg_dst: /tmp
+
+## setting src rpm file directory
+
+  VAR_Zabbix40SV_localpkg_src: /tmp
+
+## setting rpm files for RedHat7
+
+  VAR_Zabbix40SV_phpbcmath_src:
+  VAR_Zabbix40SV_phpmbstring_src:
+  VAR_Zabbix40SV_trousers_src:
+
+## Zabbix4.0 Repository Package
+
+  zabbix40sv_zabbixrelease_src: zabbix-release-4.0-1.el7.noarch.rpm
+
+## OS and version
+
+  zabbix40sv_OS_Version: RedHat7

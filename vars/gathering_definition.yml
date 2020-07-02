@@ -1,0 +1,19 @@
+---
+command:
+  - cat /etc/redhat-release
+  - getenforce
+  - systemctl status firewalld
+  - rpm -qa
+  - yum repolist
+  - ls -l /etc/yum.repos.d/*.repo
+  - cat /etc/yum.repos.d/*.repo
+  - cat /mnt/media.repo
+  - ls -l /etc/zabbix/zabbix_server.conf
+  - ls -l /etc/zabbix/web/zabbix.conf.php
+  - ls -l /etc/my.cnf
+  - ls -l /etc/httpd/conf.d/zabbix.conf
+  - ls -l /etc/logrotate.d/zabbix_server
+  - ls -l /var/log/zabbix/*server*
+  - ls -l /var/run/zabbix/*server*
+  - tail -n 100 /var/log/zabbix/zabbix_server.log
+  - ls -l /tmp
